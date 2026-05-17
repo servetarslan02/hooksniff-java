@@ -19,6 +19,13 @@ public class HookSniff {
     private final Message message;
     private final MessageAttempt messageAttempt;
     private final Statistics statistics;
+    private final Environment environment;
+    private final BackgroundTask backgroundTask;
+    private final OperationalWebhook operationalWebhook;
+    private final MessagePoller messagePoller;
+    private final Inbound inbound;
+    private final Connector connector;
+    private final Integration integration;
 
     public HookSniff(String token) {
         this(token, new HookSniffOptions());
@@ -47,5 +54,16 @@ public class HookSniff {
         this.message = new Message(this.httpClient);
         this.messageAttempt = new MessageAttempt(this.httpClient);
         this.statistics = new Statistics(this.httpClient);
+        this.environment = new Environment(this.httpClient);
+        this.backgroundTask = new BackgroundTask(this.httpClient);
+        this.operationalWebhook = new OperationalWebhook(this.httpClient);
+        this.messagePoller = new MessagePoller(this.httpClient);
+        this.inbound = new Inbound(this.httpClient);
+        this.connector = new Connector(this.httpClient);
+        this.integration = new Integration(this.httpClient);
+        this.stream = new Stream(this.httpClient);
     }
+
+    public Integration integration() { return integration; }
+    public Stream stream() { return stream; }
 }
