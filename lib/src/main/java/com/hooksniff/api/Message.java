@@ -35,14 +35,8 @@ public class Message {
         if (options.limit != null) {
             url.addQueryParameter("limit", Utils.serializeQueryParam(options.limit));
         }
-        if (options.page != null) {
-            url.addQueryParameter("page", Utils.serializeQueryParam(options.page));
-        }
-        if (options.status != null) {
-            url.addQueryParameter("status", options.status);
-        }
-        if (options.endpointId != null) {
-            url.addQueryParameter("endpoint_id", options.endpointId);
+        if (options.iterator != null) {
+            url.addQueryParameter("iterator", options.iterator);
         }
         return this.client.executeRequest(
                 "GET", url.build(), null, null, Utils.getListType(MessageOut.class));
@@ -93,7 +87,7 @@ public class Message {
                 this.client.newUrlBuilder().encodedPath("/v1/webhooks/batch");
         Map<String, Object> body = new HashMap<>();
         body.put("webhooks", webhooks);
-        return this.client.executeRequest("POST", url.build(), null, body, Map.class);
+        return this.client.executeRequest("POST", url.build(), null, body, (Class<Map<String, Object>>) (Class<?>) Map.class);
     }
 
     public List<Map<String, Object>> getAttempts(final String deliveryId)
@@ -102,6 +96,6 @@ public class Message {
                 this.client.newUrlBuilder()
                         .encodedPath("/v1/webhooks/" + deliveryId + "/attempts");
         return this.client.executeRequest(
-                "GET", url.build(), null, null, Utils.getListType(Map.class));
+                "GET", url.build(), null, null, Utils.getListType((Class<Map<String, Object>>) (Class<?>) Map.class));
     }
 }

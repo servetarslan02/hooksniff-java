@@ -18,6 +18,7 @@ public class HookSniffHttpClient {
     public ResponseMetadata getLastResponse() { return lastResponse; }
 
     private final HttpUrl baseUrl;
+    private final String apiKey;
     private final Map<String, String> defaultHeaders;
     private final List<Long> retrySchedule;
     private final OkHttpClient client;
@@ -25,14 +26,22 @@ public class HookSniffHttpClient {
     private final boolean debug;
 
     public HookSniffHttpClient(
-            HttpUrl baseUrl, Map<String, String> defaultHeaders, List<Long> retrySchedule, boolean debug) {
+            HttpUrl baseUrl, String apiKey, Map<String, String> defaultHeaders, List<Long> retrySchedule, boolean debug) {
         this.baseUrl = baseUrl;
+        this.apiKey = apiKey;
         this.defaultHeaders = defaultHeaders;
         this.retrySchedule = retrySchedule;
         this.debug = debug;
         this.client = new OkHttpClient();
-
         this.objectMapper = Utils.getObjectMapper();
+    }
+
+    public String getBaseUrl() {
+        return baseUrl.toString();
+    }
+
+    public String getApiKey() {
+        return apiKey;
     }
 
     public HttpUrl.Builder newUrlBuilder() {
@@ -47,14 +56,12 @@ public class HookSniffHttpClient {
             throws ApiException, IOException {
         Request.Builder reqBuilder = new Request.Builder().url(url);
 
-        // Handle request body
         String jsonBody = "";
         if (reqBody != null) {
             jsonBody = objectMapper.writeValueAsString(reqBody);
             RequestBody body = RequestBody.create(jsonBody, MediaType.parse("application/json"));
             reqBuilder.method(method, body);
         } else {
-            // For methods that require a body (POST, PUT, PATCH), send empty JSON object
             if ("POST".equalsIgnoreCase(method) || "PUT".equalsIgnoreCase(method) || "PATCH".equalsIgnoreCase(method)) {
                 RequestBody emptyBody = RequestBody.create("{}", MediaType.parse("application/json"));
                 reqBuilder.method(method, emptyBody);
@@ -63,7 +70,6 @@ public class HookSniffHttpClient {
             }
         }
 
-        // Add default headers
         defaultHeaders.forEach(reqBuilder::addHeader);
 
         String idempotencyKey = headers == null ? null : headers.get("idempotency-key");
@@ -71,7 +77,6 @@ public class HookSniffHttpClient {
                 reqBuilder.addHeader("idempotency-key", "auto_" + UUID.randomUUID().toString());
         }
 
-        // Add custom headers if present
         if (headers != null) {
             headers.forEach(pair -> reqBuilder.addHeader(pair.getFirst(), pair.getSecond()));
         }
@@ -123,7 +128,6 @@ public class HookSniffHttpClient {
                 }
                 response = client.newCall(request).execute();
             } catch (java.net.SocketTimeoutException | java.net.SocketException e) {
-                // Timeout — retry with backoff
                 if (retryCount >= retrySchedule.size() - 1) {
                     throw e;
                 }
@@ -138,7 +142,6 @@ public class HookSniffHttpClient {
 
             int statusCode = response.code();
 
-            // Only retry on 429 (rate limit) or 5xx (server error)
             if (statusCode != 429 && statusCode < 500) {
                 break;
             }
@@ -151,7 +154,6 @@ public class HookSniffHttpClient {
 
             long delayMs;
             if (statusCode == 429) {
-                // 429 Rate Limit — respect Retry-After header
                 String retryAfter = response.header("Retry-After");
                 if (retryAfter != null) {
                     try {
@@ -163,7 +165,6 @@ public class HookSniffHttpClient {
                     delayMs = retrySchedule.get(retryCount);
                 }
             } else {
-                // 5xx Server Error — exponential backoff with jitter
                 long baseDelay = retrySchedule.get(retryCount);
                 long jitter = ThreadLocalRandom.current().nextLong(0, baseDelay / 2 + 1);
                 delayMs = baseDelay + jitter;

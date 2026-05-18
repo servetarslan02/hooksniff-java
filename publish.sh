@@ -16,12 +16,12 @@ echo "📦 Publishing to Maven Local..."
 echo "📤 Uploading to Central Portal..."
 BUNDLE_DIR="/tmp/central-bundle"
 rm -rf "$BUNDLE_DIR"
-M2_PATH="$HOME/.m2/repository/io/github/servetarslan02/hooksniff-sdk/1.1.3"
-mkdir -p "$BUNDLE_DIR/io/github/servetarslan02/hooksniff-sdk/1.1.3"
+M2_PATH="$HOME/.m2/repository/io/github/servetarslan02/hooksniff-sdk/1.2.0"
+mkdir -p "$BUNDLE_DIR/io/github/servetarslan02/hooksniff-sdk/1.2.0"
 
 cp "$M2_PATH"/*.jar "$M2_PATH"/*.jar.asc "$M2_PATH"/*.pom "$M2_PATH"/*.pom.asc \
    "$M2_PATH"/*.module "$M2_PATH"/*.module.asc \
-   "$BUNDLE_DIR/io/github/servetarslan02/hooksniff-sdk/1.1.3/" 2>/dev/null || true
+   "$BUNDLE_DIR/io/github/servetarslan02/hooksniff-sdk/1.2.0/" 2>/dev/null || true
 
 cd "$BUNDLE_DIR"
 python3 -c "

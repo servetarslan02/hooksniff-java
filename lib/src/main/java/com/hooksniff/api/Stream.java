@@ -48,7 +48,6 @@ public class Stream {
     public StreamMessageOut publishEvent(PublishEventIn body) throws IOException, ApiException {
         return client.executeRequest("POST", client.newUrlBuilder().encodedPath("/v1/stream/events").build(), null, body, StreamMessageOut.class);
     }
-}
 
     /**
      * Subscribe to real-time events via SSE on a channel.
@@ -67,7 +66,7 @@ public class Stream {
         conn.setConnectTimeout(30000);
         conn.setReadTimeout(0);
 
-        try (var reader = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()))) {
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()))) {
             String eventType = "";
             StringBuilder data = new StringBuilder();
             String line;
@@ -86,3 +85,4 @@ public class Stream {
             conn.disconnect();
         }
     }
+}

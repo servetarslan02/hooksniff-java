@@ -38,8 +38,8 @@ public class Endpoint {
         if (options.limit != null) {
             url.addQueryParameter("limit", Utils.serializeQueryParam(options.limit));
         }
-        if (options.page != null) {
-            url.addQueryParameter("page", Utils.serializeQueryParam(options.page));
+        if (options.iterator != null) {
+            url.addQueryParameter("iterator", options.iterator);
         }
         return this.client.executeRequest(
                 "GET", url.build(), null, null, Utils.getListType(EndpointOut.class));

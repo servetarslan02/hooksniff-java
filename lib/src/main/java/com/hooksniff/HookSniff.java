@@ -48,7 +48,7 @@ public class HookSniff {
         defaultHeaders.put("X-HookSniff-SDK", sdkUA);
         defaultHeaders.put("Authorization", "Bearer " + token);
 
-        this.httpClient = new HookSniffHttpClient(parsedUrl, defaultHeaders, options.getRetrySchedule(), options.isDebug());
+        this.httpClient = new HookSniffHttpClient(parsedUrl, token, defaultHeaders, options.getRetrySchedule(), options.isDebug());
 
         this.authentication = new Authentication(this.httpClient);
         this.endpoint = new Endpoint(this.httpClient);
