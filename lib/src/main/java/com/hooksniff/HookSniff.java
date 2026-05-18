@@ -43,7 +43,9 @@ public class HookSniff {
         }
 
         Map<String, String> defaultHeaders = new HashMap<>();
-        defaultHeaders.put("User-Agent", "hooksniff-libs/" + Version.VERSION + "/java");
+        String sdkUA = "hooksniff-libs/" + Version.VERSION + "/java";
+        defaultHeaders.put("User-Agent", sdkUA);
+        defaultHeaders.put("X-HookSniff-SDK", sdkUA);
         defaultHeaders.put("Authorization", "Bearer " + token);
 
         this.httpClient = new HookSniffHttpClient(parsedUrl, defaultHeaders, options.getRetrySchedule(), options.isDebug());
