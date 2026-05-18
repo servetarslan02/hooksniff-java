@@ -13,6 +13,10 @@ import java.util.concurrent.locks.LockSupport;
 import java.util.UUID;
 
 public class HookSniffHttpClient {
+    private ResponseMetadata lastResponse;
+
+    public ResponseMetadata getLastResponse() { return lastResponse; }
+
     private final HttpUrl baseUrl;
     private final Map<String, String> defaultHeaders;
     private final List<Long> retrySchedule;
