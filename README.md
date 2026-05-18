@@ -1,10 +1,10 @@
 <h1 align="center">
-    <a style="text-decoration: none" href="https://www.hooksniff.com">
+    <a style="text-decoration: none" href="https://hooksniff.vercel.app">
       <p align="center">🪝 HookSniff - Reliable Webhook Delivery</p>
     </a>
 </h1>
 <h2 align="center">
-  <a href="https://hooksniff.com">Website</a> | <a href="https://docs.hooksniff.com">Documentation</a> | <a href="https://github.com/servetarslan02/HookSniff/discussions">Community</a>
+  <a href="https://hooksniff.vercel.app">Website</a> | <a href="https://hooksniff.vercel.app/docs">Documentation</a> | <a href="https://github.com/servetarslan02/HookSniff/discussions">Community</a>
 </h2>
 
 Java library for interacting with the HookSniff API and verifying webhook signatures.
@@ -37,7 +37,7 @@ implementation "io.github.servetarslan02:hooksniff-sdk:1.1.1"
 
 ## Usage
 
-See [API documentation](https://docs.hooksniff.com) for detailed usage.
+See [API documentation](https://hooksniff.vercel.app/docs) for detailed usage.
 
 ## Development
 
