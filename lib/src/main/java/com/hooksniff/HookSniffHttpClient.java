@@ -22,12 +22,14 @@ public class HookSniffHttpClient {
     private final List<Long> retrySchedule;
     private final OkHttpClient client;
     private final ObjectMapper objectMapper;
+    private final boolean debug;
 
     public HookSniffHttpClient(
-            HttpUrl baseUrl, Map<String, String> defaultHeaders, List<Long> retrySchedule) {
+            HttpUrl baseUrl, Map<String, String> defaultHeaders, List<Long> retrySchedule, boolean debug) {
         this.baseUrl = baseUrl;
         this.defaultHeaders = defaultHeaders;
         this.retrySchedule = retrySchedule;
+        this.debug = debug;
         this.client = new OkHttpClient();
 
         this.objectMapper = Utils.getObjectMapper();
@@ -79,7 +81,18 @@ public class HookSniffHttpClient {
                 String.valueOf(ThreadLocalRandom.current().nextLong(0, Long.MAX_VALUE)));
 
         Request request = reqBuilder.build();
+
+        if (debug) {
+            System.out.println("[HookSniff] → " + request.method() + " " + request.url());
+        }
+
+        long startTime = System.currentTimeMillis();
         Response response = executeRequestWithRetry(request, jsonBody);
+
+        if (debug) {
+            long elapsed = System.currentTimeMillis() - startTime;
+            System.out.println("[HookSniff] ← " + response.code() + " (" + elapsed + "ms)");
+        }
 
         if (response.body() == null) {
             throw new ApiException("Body is null", response.code(), "");
