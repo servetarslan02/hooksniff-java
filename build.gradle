@@ -69,7 +69,13 @@ jar {
 
 javadoc {
     source = sourceSets.main.allJava
-    excludes = [ "com/hooksniff/**/*" ]
+    // Don't exclude source files — Maven Central requires non-empty javadoc
+    failOnError = false
+    options {
+        encoding = 'UTF-8'
+        charSet = 'UTF-8'
+        addStringOption('Xdoclint:none', '-quiet')
+    }
 }
 
 apply from: "deploy.gradle"
