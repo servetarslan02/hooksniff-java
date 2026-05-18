@@ -99,14 +99,37 @@ public class HookSniffHttpClient {
         Response response = client.newCall(request).execute();
 
         int retryCount = 0;
-        while (response.code() >= 500 && retryCount < retrySchedule.size()) {
+        while (retryCount < retrySchedule.size()) {
+            int statusCode = response.code();
+
+            // Only retry on 429 (rate limit) or 5xx (server error)
+            if (statusCode != 429 && statusCode < 500) {
+                break;
+            }
+
             response.close();
 
-            // Exponential backoff with jitter
-            long baseDelay = retrySchedule.get(retryCount);
-            long jitter = ThreadLocalRandom.current().nextLong(0, baseDelay / 2 + 1);
-            long totalDelay = baseDelay + jitter;
-            LockSupport.parkNanos(totalDelay * 1_000_000); // Convert ms to ns
+            long delayMs;
+            if (statusCode == 429) {
+                // 429 Rate Limit — respect Retry-After header
+                String retryAfter = response.header("Retry-After");
+                if (retryAfter != null) {
+                    try {
+                        delayMs = Long.parseLong(retryAfter) * 1000;
+                    } catch (NumberFormatException e) {
+                        delayMs = retrySchedule.get(retryCount);
+                    }
+                } else {
+                    delayMs = retrySchedule.get(retryCount);
+                }
+            } else {
+                // 5xx Server Error — exponential backoff with jitter
+                long baseDelay = retrySchedule.get(retryCount);
+                long jitter = ThreadLocalRandom.current().nextLong(0, baseDelay / 2 + 1);
+                delayMs = baseDelay + jitter;
+            }
+
+            LockSupport.parkNanos(delayMs * 1_000_000); // Convert ms to ns
 
             Request retryRequest =
                     request.newBuilder()
