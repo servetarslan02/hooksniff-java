@@ -102,9 +102,9 @@ public class HookSniffTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidBaseUrl() {
-        new HookSniff("test-token", new HookSniffOptions() {{
-            setServerUrl("not a valid url");
-        }});
+        HookSniffOptions opts = new HookSniffOptions();
+        opts.setServerUrl("not a valid url");
+        new HookSniff("test-token", opts);
     }
 
     @Test
