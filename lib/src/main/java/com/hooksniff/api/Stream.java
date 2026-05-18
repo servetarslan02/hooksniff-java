@@ -22,30 +22,30 @@ public class Stream {
     }
 
     public StreamChannelOut createChannel(StreamChannelIn body) throws IOException, ApiException {
-        return client.executeRequest("POST", client.newUrlBuilder().encodedPath("/api/v1/stream/channels").build(), body, null, StreamChannelOut.class);
+        return client.executeRequest("POST", client.newUrlBuilder().encodedPath("/api/v1/stream/channels").build(), null, body, StreamChannelOut.class);
     }
 
     public StreamChannelOut updateChannel(String id, StreamChannelUpdate body) throws IOException, ApiException {
-        return client.executeRequest("PUT", client.newUrlBuilder().encodedPath("/api/v1/stream/channels/" + id).build(), body, null, StreamChannelOut.class);
+        return client.executeRequest("PUT", client.newUrlBuilder().encodedPath("/api/v1/stream/channels/" + id).build(), null, body, StreamChannelOut.class);
     }
 
     public void deleteChannel(String id) throws IOException, ApiException {
-        client.executeRequest("DELETE", client.newUrlBuilder().encodedPath("/api/v1/stream/channels/" + id).build(), null, null, Void.class);
+        client.executeRequest("DELETE", client.newUrlBuilder().encodedPath("/api/v1/stream/channels/" + id).build(), null, null, null);
     }
 
-    public List<StreamMessageOut> listMessages(String id) throws IOException, ApiException {
-        return client.executeRequest("GET", client.newUrlBuilder().encodedPath("/api/v1/stream/channels/" + id + "/messages").build(), null, null, Utils.getListType(StreamMessageOut.class));
+    public List<StreamMessageOut> listMessages(String channelId) throws IOException, ApiException {
+        return client.executeRequest("GET", client.newUrlBuilder().encodedPath("/api/v1/stream/channels/" + channelId + "/messages").build(), null, null, Utils.getListType(StreamMessageOut.class));
     }
 
     public List<StreamSubscriptionOut> listSubscriptions() throws IOException, ApiException {
         return client.executeRequest("GET", client.newUrlBuilder().encodedPath("/api/v1/stream/subscriptions").build(), null, null, Utils.getListType(StreamSubscriptionOut.class));
     }
 
-    public void disconnectSubscription(String id) throws IOException, ApiException {
-        client.executeRequest("DELETE", client.newUrlBuilder().encodedPath("/api/v1/stream/subscriptions/" + id).build(), null, null, Void.class);
+    public void deleteSubscription(String id) throws IOException, ApiException {
+        client.executeRequest("DELETE", client.newUrlBuilder().encodedPath("/api/v1/stream/subscriptions/" + id).build(), null, null, null);
     }
 
-    public PublishEventResponse publish(PublishEventIn body) throws IOException, ApiException {
-        return client.executeRequest("POST", client.newUrlBuilder().encodedPath("/api/v1/stream/publish").build(), body, null, PublishEventResponse.class);
+    public StreamMessageOut publishEvent(PublishEventIn body) throws IOException, ApiException {
+        return client.executeRequest("POST", client.newUrlBuilder().encodedPath("/api/v1/stream/events").build(), null, body, StreamMessageOut.class);
     }
 }

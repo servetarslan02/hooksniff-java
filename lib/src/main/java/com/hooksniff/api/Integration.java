@@ -7,7 +7,6 @@ import com.hooksniff.models.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public class Integration {
     private final HookSniffHttpClient client;
@@ -23,15 +22,15 @@ public class Integration {
     }
 
     public IntegrationOut create(IntegrationIn body) throws IOException, ApiException {
-        return client.executeRequest("POST", client.newUrlBuilder().encodedPath("/api/v1/integrations").build(), body, null, IntegrationOut.class);
+        return client.executeRequest("POST", client.newUrlBuilder().encodedPath("/api/v1/integrations").build(), null, body, IntegrationOut.class);
     }
 
     public IntegrationOut update(String id, IntegrationUpdate body) throws IOException, ApiException {
-        return client.executeRequest("PUT", client.newUrlBuilder().encodedPath("/api/v1/integrations/" + id).build(), body, null, IntegrationOut.class);
+        return client.executeRequest("PUT", client.newUrlBuilder().encodedPath("/api/v1/integrations/" + id).build(), null, body, IntegrationOut.class);
     }
 
     public void delete(String id) throws IOException, ApiException {
-        client.executeRequest("DELETE", client.newUrlBuilder().encodedPath("/api/v1/integrations/" + id).build(), null, null, Void.class);
+        client.executeRequest("DELETE", client.newUrlBuilder().encodedPath("/api/v1/integrations/" + id).build(), null, null, null);
     }
 
     public IntegrationTestResponse test(String id) throws IOException, ApiException {

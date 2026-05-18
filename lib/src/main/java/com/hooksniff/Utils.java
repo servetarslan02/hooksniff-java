@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,6 +51,11 @@ public class Utils {
         // Used to get the enums correct representation as a query param
         // does not url encode the returned string
         String toQueryParam();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Class<List<T>> getListType(Class<T> elementClass) {
+        return (Class<List<T>>) (Class<?>) List.class;
     }
 
     public static ObjectMapper getObjectMapper() {

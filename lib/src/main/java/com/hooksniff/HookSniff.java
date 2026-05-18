@@ -26,6 +26,7 @@ public class HookSniff {
     private final Inbound inbound;
     private final Connector connector;
     private final Integration integration;
+    private final Stream stream;
 
     public HookSniff(String token) {
         this(token, new HookSniffOptions());
