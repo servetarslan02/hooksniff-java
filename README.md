@@ -67,3 +67,13 @@ See [API documentation](https://hooksniff.vercel.app/docs) for detailed usage.
 ## License
 
 MIT
+
+## Features
+
+- ✅ HMAC-SHA256 webhook verification
+- ✅ Typed webhook events
+- ✅ Automatic retry with exponential backoff
+- ✅ Pagination helpers
+- ✅ Rate limit header parsing
+- ✅ SSE streaming
+- ✅ Idempotency keys
