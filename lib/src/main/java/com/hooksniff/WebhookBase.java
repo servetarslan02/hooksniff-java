@@ -8,6 +8,7 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,6 +87,212 @@ abstract class WebhookBase {
             }
         }
         throw new WebhookVerificationException("No matching signature found");
+    }
+
+    /**
+     * Verify the webhook signature and parse the payload into a WebhookEvent.
+     *
+     * @param payload Raw request body
+     * @param headers Request headers containing hooksniff-id, hooksniff-timestamp, hooksniff-signature
+     * @return Parsed WebhookEvent with typed fields
+     * @throws WebhookVerificationException if signature is invalid or timestamp is outside tolerance
+     */
+    @SuppressWarnings("unchecked")
+    public WebhookEvent verifyAndParse(final String payload, final Map<String, List<String>> headers)
+            throws WebhookVerificationException {
+        verify(payload, headers);
+
+        try {
+            // Simple JSON parsing without external dependency
+            Map<String, Object> parsed = parseJson(payload);
+            String event = parsed.containsKey("event") ? String.valueOf(parsed.get("event")) :
+                           parsed.containsKey("eventType") ? String.valueOf(parsed.get("eventType")) : "";
+            Map<String, Object> data = parsed.containsKey("data") && parsed.get("data") instanceof Map
+                ? (Map<String, Object>) parsed.get("data") : new HashMap<>();
+            String timestamp = parsed.containsKey("timestamp") ? String.valueOf(parsed.get("timestamp")) : "";
+
+            return new WebhookEvent(event, data, timestamp);
+        } catch (Exception e) {
+            throw new WebhookVerificationException("Failed to parse webhook payload: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Verify the webhook signature and parse the payload, using Map headers.
+     */
+    @SuppressWarnings("unchecked")
+    public WebhookEvent verifyAndParse(final String payload, final Map<String, String> headers, boolean simpleHeaders)
+            throws WebhookVerificationException {
+        // Convert simple map to multi-value map
+        Map<String, List<String>> multiHeaders = new HashMap<>();
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            multiHeaders.put(entry.getKey(), List.of(entry.getValue()));
+        }
+        return verifyAndParse(payload, multiHeaders);
+    }
+
+    /**
+     * Minimal JSON parser for webhook payloads.
+     * Parses a JSON object string into a Map.
+     */
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> parseJson(String json) {
+        // Use Java's built-in Nashorn or simple parsing
+        // For production, this should use a proper JSON library
+        // But since we're in a library without Jackson/Gson dependency,
+        // we'll do a basic parse of the expected structure
+        Map<String, Object> result = new HashMap<>();
+        json = json.trim();
+
+        if (!json.startsWith("{") || !json.endsWith("}")) {
+            return result;
+        }
+
+        // Extract "event" field
+        String event = extractJsonString(json, "event");
+        if (event != null) result.put("event", event);
+
+        // Extract "eventType" field
+        String eventType = extractJsonString(json, "eventType");
+        if (eventType != null) result.put("eventType", eventType);
+
+        // Extract "timestamp" field
+        String timestamp = extractJsonString(json, "timestamp");
+        if (timestamp != null) result.put("timestamp", timestamp);
+
+        // Extract "data" field as raw JSON (we'll store it as a map placeholder)
+        int dataIndex = json.indexOf("\"data\"");
+        if (dataIndex >= 0) {
+            int colonIndex = json.indexOf(":", dataIndex + 6);
+            if (colonIndex >= 0) {
+                int braceStart = json.indexOf("{", colonIndex);
+                if (braceStart >= 0) {
+                    int depth = 0;
+                    int end = braceStart;
+                    for (int i = braceStart; i < json.length(); i++) {
+                        if (json.charAt(i) == '{') depth++;
+                        if (json.charAt(i) == '}') depth--;
+                        if (depth == 0) { end = i + 1; break; }
+                    }
+                    String dataJson = json.substring(braceStart, end);
+                    result.put("data", parseNestedJson(dataJson));
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static String extractJsonString(String json, String key) {
+        String search = "\"" + key + "\"";
+        int index = json.indexOf(search);
+        if (index < 0) return null;
+
+        int colonIndex = json.indexOf(":", index + search.length());
+        if (colonIndex < 0) return null;
+
+        int start = json.indexOf("\"", colonIndex + 1);
+        if (start < 0) return null;
+        start++;
+
+        int end = start;
+        while (end < json.length()) {
+            if (json.charAt(end) == '\\') { end += 2; continue; }
+            if (json.charAt(end) == '"') break;
+            end++;
+        }
+
+        return json.substring(start, end);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> parseNestedJson(String json) {
+        Map<String, Object> result = new HashMap<>();
+        json = json.trim();
+        if (!json.startsWith("{")) return result;
+
+        // Simple key-value extraction for nested objects
+        int i = 1; // skip opening {
+        while (i < json.length() - 1) {
+            // Skip whitespace
+            while (i < json.length() && Character.isWhitespace(json.charAt(i))) i++;
+            if (i >= json.length() - 1 || json.charAt(i) == '}') break;
+
+            // Read key
+            if (json.charAt(i) != '"') { i++; continue; }
+            i++;
+            int keyStart = i;
+            while (i < json.length() && json.charAt(i) != '"') {
+                if (json.charAt(i) == '\\') i++;
+                i++;
+            }
+            String key = json.substring(keyStart, i);
+            i++; // skip closing "
+
+            // Skip colon
+            while (i < json.length() && (json.charAt(i) == ':' || Character.isWhitespace(json.charAt(i)))) i++;
+
+            // Read value
+            if (i >= json.length()) break;
+            char c = json.charAt(i);
+            if (c == '"') {
+                // String value
+                i++;
+                int valStart = i;
+                while (i < json.length()) {
+                    if (json.charAt(i) == '\\') { i += 2; continue; }
+                    if (json.charAt(i) == '"') break;
+                    i++;
+                }
+                result.put(key, json.substring(valStart, i));
+                i++;
+            } else if (c == '{') {
+                // Nested object — store as raw string for simplicity
+                int depth = 0;
+                int start = i;
+                for (; i < json.length(); i++) {
+                    if (json.charAt(i) == '{') depth++;
+                    if (json.charAt(i) == '}') depth--;
+                    if (depth == 0) { i++; break; }
+                }
+                result.put(key, parseNestedJson(json.substring(start, i)));
+            } else if (c == '[') {
+                // Array — skip for now
+                int depth = 0;
+                for (; i < json.length(); i++) {
+                    if (json.charAt(i) == '[') depth++;
+                    if (json.charAt(i) == ']') depth--;
+                    if (depth == 0) { i++; break; }
+                }
+            } else if (c == 't' || c == 'f') {
+                // Boolean
+                result.put(key, json.startsWith("true", i));
+                i += json.startsWith("true", i) ? 4 : 5;
+            } else if (c == 'n') {
+                // null
+                result.put(key, null);
+                i += 4;
+            } else {
+                // Number
+                int start = i;
+                while (i < json.length() && ",} ]".indexOf(json.charAt(i)) < 0) i++;
+                String numStr = json.substring(start, i).trim();
+                try {
+                    if (numStr.contains(".")) {
+                        result.put(key, Double.parseDouble(numStr));
+                    } else {
+                        result.put(key, Long.parseLong(numStr));
+                    }
+                } catch (NumberFormatException e) {
+                    result.put(key, numStr);
+                }
+            }
+
+            // Skip comma
+            while (i < json.length() && (json.charAt(i) == ',' || Character.isWhitespace(json.charAt(i)))) i++;
+        }
+
+        return result;
     }
 
     private static String firstHeader(
