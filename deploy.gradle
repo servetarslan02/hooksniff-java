@@ -26,8 +26,8 @@ nexusPublishing {
         sonatype {
             nexusUrl.set(uri(getReleaseRepositoryUrl()))
             snapshotRepositoryUrl.set(uri(getSnapshotRepositoryUrl()))
-            username = getRepositoryUsername()
-            password = getRepositoryPassword()
+            username = System.getenv("SONATYPE_USERNAME") ?: getRepositoryUsername()
+            password = System.getenv("SONATYPE_PASSWORD") ?: getRepositoryPassword()
         }
     }
 }
