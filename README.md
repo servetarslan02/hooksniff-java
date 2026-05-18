@@ -1,93 +1,69 @@
 <h1 align="center">
     <a style="text-decoration: none" href="https://www.hooksniff.com">
-      <img width="120" src="https://avatars.githubusercontent.com/u/80175132?s=200&v=4" />
-      <p align="center">Svix - Webhooks as a service</p>
+      <p align="center">🪝 HookSniff - Reliable Webhook Delivery</p>
     </a>
 </h1>
 <h2 align="center">
-  <a href="https://hooksniff.com">Website</a> | <a href="https://docs.hooksniff.com">Documentation</a> | <a href="https://hooksniff.com/slack">Community Slack</a>
-<h2>
+  <a href="https://hooksniff.com">Website</a> | <a href="https://docs.hooksniff.com">Documentation</a> | <a href="https://github.com/servetarslan02/HookSniff/discussions">Community</a>
+</h2>
 
-Java library for interacting with the Svix API and verifying webhook signatures
+Java library for interacting with the HookSniff API and verifying webhook signatures.
 
-![GitHub tag](https://img.shields.io/github/tag/hooksniff/hooksniff-webhooks.svg)
-[![Maven Central (Java)](https://img.shields.io/maven-central/v/com.hooksniff/hooksniff?label=maven-central%20(java))](https://search.maven.org/artifact/com.hooksniff/hooksniff)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.servetarslan02/hooksniff-sdk?label=maven-central)](https://central.sonatype.com/artifact/io.github.servetarslan02/hooksniff-sdk)
 
-[![Join our slack](https://img.shields.io/badge/Slack-join%20the%20community-blue?logo=slack&style=social)](https://www.hooksniff.com/slack/)
+## Features
 
-# Usage Documentation
+- ✅ Full API support
+- ✅ Webhook signature verification (HMAC-SHA256)
+- ✅ Java 1.8+ compatible
 
-You can find general usage documentation at <https://docs.hooksniff.com>.  For complete API documentation with code examples for each endpoint in all of our official client libraries head over to our API documentation site at <https://api.hooksniff.com>.
+## Installation
 
-# Language Support
-
-<table style="table-layout:fixed; white-space: nowrap;">
-  <th colspan="2">⚡️ Features ⚡️</th>
-  <tr>
-    <th>Officially Supported</th>
-    <th>✅</th>
-  </tr>
-  <tr>
-    <th>API Support</th>
-    <th>✅</th>
-  </tr>
-  <tr>
-    <th>Signature Verification</th>
-    <th>✅</th>
-  </tr>
-  <tr>
-    <th>Caveats</th>
-    <th>Async support planned. (If you use kotlin, checkout our kotlin library for coroutine support.)</th>
-  </tr>
-</table>
-
-# Installation
-
-### Maven users
-
-Add this dependency to your project's POM:
+### Maven
 
 ```xml
 <dependency>
-  <groupId>com.hooksniff</groupId>
-  <artifactId>hooksniff</artifactId>
-  <version>1.93.0</version>
-  <scope>compile</scope>
+  <groupId>io.github.servetarslan02</groupId>
+  <artifactId>hooksniff-sdk</artifactId>
+  <version>1.1.1</version>
 </dependency>
 ```
 
-### Gradle users
-
-Add this dependency to your project's build file:
+### Gradle
 
 ```groovy
-implementation "com.hooksniff:hooksniff:1.93.0"
+implementation "io.github.servetarslan02:hooksniff-sdk:1.1.1"
 ```
 
-# Development
+## Usage
 
-First checkout the [core README](../README.md#development) for details on how to generate our API bindings, then follow the steps below.
+See [API documentation](https://docs.hooksniff.com) for detailed usage.
 
-## Requirements
+## Development
 
- - Java 1.8+
- - Gradle
+### Requirements
 
-## Building the library
+- Java 1.8+
+- Gradle
+
+### Build
+
 ```sh
 ./gradlew build
 ```
 
-## Running Tests
-
-Simply run:
+### Test
 
 ```sh
 ./gradlew test
 ```
 
-## Publishing to Maven
+### Publish to Maven Central
 
 ```sh
 ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
 ```
+
+## License
+
+MIT
