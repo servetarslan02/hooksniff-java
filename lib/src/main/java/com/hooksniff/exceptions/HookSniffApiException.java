@@ -151,3 +151,66 @@ class HookSniffApiExceptionFactory {
         }
     }
 }
+
+/** 408 Request Timeout — The server timed out waiting for the request */
+class RequestTimeoutException extends HookSniffApiException {
+    public RequestTimeoutException(String message, java.util.Map<String, String> headers) {
+        super(message != null ? message : "Request timeout", 408, message, headers);
+    }
+}
+
+/** 410 Gone — The resource has been permanently removed */
+class GoneException extends HookSniffApiException {
+    public GoneException(String message, java.util.Map<String, String> headers) {
+        super(message != null ? message : "Gone", 410, message, headers);
+    }
+}
+
+/** 413 Payload Too Large — The request body exceeds the limit */
+class PayloadTooLargeException extends HookSniffApiException {
+    public PayloadTooLargeException(String message, java.util.Map<String, String> headers) {
+        super(message != null ? message : "Payload too large", 413, message, headers);
+    }
+}
+
+/** 501 Not Implemented — The server does not support this functionality */
+class NotImplementedException extends HookSniffApiException {
+    public NotImplementedException(String message, java.util.Map<String, String> headers) {
+        super(message != null ? message : "Not implemented", 501, message, headers);
+    }
+}
+
+/** 507 Insufficient Storage — The server cannot store the representation */
+class InsufficientStorageException extends HookSniffApiException {
+    public InsufficientStorageException(String message, java.util.Map<String, String> headers) {
+        super(message != null ? message : "Insufficient storage", 507, message, headers);
+    }
+}
+
+/** 508 Loop Detected — The server detected an infinite loop */
+class LoopDetectedException extends HookSniffApiException {
+    public LoopDetectedException(String message, java.util.Map<String, String> headers) {
+        super(message != null ? message : "Loop detected", 508, message, headers);
+    }
+}
+
+/** Timeout — request exceeded the configured timeout */
+class TimeoutException extends HookSniffApiException {
+    public TimeoutException(String message) {
+        super(message != null ? message : "Request timeout", 0, null, java.util.Collections.emptyMap());
+    }
+}
+
+/** Network error — connection failed, DNS error, etc. */
+class NetworkException extends HookSniffApiException {
+    public NetworkException(String message) {
+        super(message != null ? message : "Network error", 0, null, java.util.Collections.emptyMap());
+    }
+}
+
+/** Authentication error — token invalid, expired, or missing */
+class AuthenticationException extends HookSniffApiException {
+    public AuthenticationException(String message, java.util.Map<String, String> headers) {
+        super(message != null ? message : "Authentication failed", 401, message, headers);
+    }
+}
