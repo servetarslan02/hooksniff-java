@@ -13,6 +13,10 @@ import java.util.Map;
  * System.out.println(event.getEvent());     // "endpoint.created"
  * System.out.println(event.getData());      // {endpointId=ep_123, ...}
  * System.out.println(event.getTimestamp()); // "2026-05-19T02:33:00Z"
+ *
+ * // Typed access:
+ * EndpointCreatedData typed = event.parseData(EndpointCreatedData.class);
+ * System.out.println(typed.getEndpointId()); // "ep_123"
  * }</pre>
  */
 public class WebhookEvent {
@@ -57,6 +61,21 @@ public class WebhookEvent {
      */
     public Object get(String key) {
         return data != null ? data.get(key) : null;
+    }
+
+    /**
+     * Parse the event data into a typed class using JSON serialization.
+     *
+     * <p>Requires Jackson (or compatible JSON library) on the classpath.</p>
+     *
+     * @param <T> the target type
+     * @param clazz the target class
+     * @return parsed typed data object
+     * @throws com.fasterxml.jackson.core.JsonProcessingException if parsing fails
+     */
+    public <T> T parseData(Class<T> clazz) throws Exception {
+        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        return mapper.convertValue(data, clazz);
     }
 
     @Override
