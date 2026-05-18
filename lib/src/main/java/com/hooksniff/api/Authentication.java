@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Authentication API — HookSniff /v1/auth
+ */
 public class Authentication {
     private final HookSniffHttpClient client;
 
@@ -17,61 +20,68 @@ public class Authentication {
         this.client = client;
     }
 
-    /** Get portal access URL for the given app. */
-    public Map<String, Object> appPortalAccess(
-            final String appId, final AuthenticationAppPortalAccessOptions options)
+    /** Login with email and password. Returns JWT token. */
+    public Map<String, Object> login(final String email, final String password)
             throws IOException, ApiException {
-        HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format("/api/v1/auth/portal/%s", appId));
-        Map<String, String> headers = new HashMap<>();
-        if (options.idempotencyKey != null) {
-            headers.put("idempotency-key", options.idempotencyKey);
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/auth/login");
+        Map<String, Object> body = new HashMap<>();
+        body.put("email", email);
+        body.put("password", password);
+        return this.client.executeRequest("POST", url.build(), null, body, Map.class);
+    }
+
+    /** Register a new account. */
+    public Map<String, Object> register(final String email, final String password, final String name)
+            throws IOException, ApiException {
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/auth/register");
+        Map<String, Object> body = new HashMap<>();
+        body.put("email", email);
+        body.put("password", password);
+        if (name != null) {
+            body.put("name", name);
         }
-        return this.client.executeRequest(
-                "POST", url.build(), Headers.of(headers), null, Map.class);
+        return this.client.executeRequest("POST", url.build(), null, body, Map.class);
     }
 
-    /** Get portal access URL for the given app. */
-    public Map<String, Object> appPortalAccess(final String appId)
-            throws IOException, ApiException {
-        return this.appPortalAccess(appId, new AuthenticationAppPortalAccessOptions());
+    /** Get current user profile. */
+    public Map<String, Object> getMe() throws IOException, ApiException {
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/auth/me");
+        return this.client.executeRequest("GET", url.build(), null, null, Map.class);
     }
 
-    /** Expire all auth tokens for the given user. */
-    public void expireAll(final String appId, final AuthenticationExpireAllOptions options)
-            throws IOException, ApiException {
-        HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format("/api/v1/auth/expire-all/%s", appId));
-        Map<String, String> headers = new HashMap<>();
-        if (options.idempotencyKey != null) {
-            headers.put("idempotency-key", options.idempotencyKey);
-        }
-        this.client.executeRequest("POST", url.build(), Headers.of(headers), null, null);
-    }
-
-    /** Expire all auth tokens for the given user. */
-    public void expireAll(final String appId) throws IOException, ApiException {
-        this.expireAll(appId, new AuthenticationExpireAllOptions());
-    }
-
-    /** Logout the current auth token. */
+    /** Logout (invalidate refresh token). */
     public void logout() throws IOException, ApiException {
-        this.logout(new AuthenticationLogoutOptions());
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/auth/logout");
+        this.client.executeRequest("POST", url.build(), null, null, null);
     }
 
-    /** Logout the current auth token. */
-    public void logout(final AuthenticationLogoutOptions options) throws IOException, ApiException {
-        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/api/v1/auth/logout");
-        Map<String, String> headers = new HashMap<>();
-        if (options.idempotencyKey != null) {
-            headers.put("idempotency-key", options.idempotencyKey);
-        }
-        this.client.executeRequest("POST", url.build(), Headers.of(headers), null, null);
+    /** Export user data (GDPR). */
+    public Map<String, Object> exportData() throws IOException, ApiException {
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/auth/export");
+        return this.client.executeRequest("GET", url.build(), null, null, Map.class);
+    }
+
+    /** Delete account (GDPR). */
+    public void deleteAccount() throws IOException, ApiException {
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/auth/account");
+        this.client.executeRequest("DELETE", url.build(), null, null, null);
+    }
+
+    /** Change password. */
+    public void changePassword(final String currentPassword, final String newPassword)
+            throws IOException, ApiException {
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/auth/password");
+        Map<String, Object> body = new HashMap<>();
+        body.put("current_password", currentPassword);
+        body.put("new_password", newPassword);
+        this.client.executeRequest("PUT", url.build(), null, body, null);
+    }
+
+    /** Request password reset email. */
+    public void forgotPassword(final String email) throws IOException, ApiException {
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/auth/forgot-password");
+        Map<String, Object> body = new HashMap<>();
+        body.put("email", email);
+        this.client.executeRequest("POST", url.build(), null, body, null);
     }
 }

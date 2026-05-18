@@ -18,7 +18,7 @@ public class Health {
     /** Verify the API server is up and running. */
     public void get() throws IOException, ApiException {
 
-        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/api/v1/health");
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/health");
         this.client.executeRequest("GET", url.build(), null, null, null);
     }
 }

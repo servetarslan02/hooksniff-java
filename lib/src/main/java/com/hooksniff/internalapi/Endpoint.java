@@ -37,7 +37,7 @@ public class Endpoint {
                         .newUrlBuilder()
                         .encodedPath(
                                 String.format(
-                                        "/api/v1/app/%s/endpoint/%s/transformation",
+                                        "/v1/endpoints/%s/transformation",
                                         appId, endpointId));
         this.client.executeRequest("PATCH", url.build(), null, endpointTransformationIn, null);
     }

@@ -24,7 +24,7 @@ public class Statistics {
         HttpUrl.Builder url =
                 this.client
                         .newUrlBuilder()
-                        .encodedPath("/api/v1/stats/usage/app");
+                        .encodedPath("/v1/stats/usage/app");
         Map<String, String> headers = new HashMap<>();
         if (options.idempotencyKey != null) {
             headers.put("idempotency-key", options.idempotencyKey);
@@ -44,7 +44,7 @@ public class Statistics {
                 this.client
                         .newUrlBuilder()
                         .encodedPath(
-                                String.format("/api/v1/stats/app/%s/endpoint", appId));
+                                String.format("/v1/stats/app/%s/endpoint", appId));
         return this.client.executeRequest("GET", url.build(), null, null, Map.class);
     }
 }

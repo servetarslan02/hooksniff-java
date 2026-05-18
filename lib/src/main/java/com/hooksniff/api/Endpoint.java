@@ -3,26 +3,23 @@ package com.hooksniff.api;
 import com.hooksniff.HookSniffHttpClient;
 import com.hooksniff.Utils;
 import com.hooksniff.exceptions.ApiException;
-import com.hooksniff.models.EndpointHeadersIn;
-import com.hooksniff.models.EndpointHeadersOut;
-import com.hooksniff.models.EndpointHeadersPatchIn;
 import com.hooksniff.models.EndpointIn;
 import com.hooksniff.models.EndpointOut;
 import com.hooksniff.models.EndpointPatch;
-import com.hooksniff.models.EndpointSecretOut;
-import com.hooksniff.models.EndpointSecretRotateIn;
 import com.hooksniff.models.EndpointUpdate;
-import com.hooksniff.models.EventExampleIn;
-import com.hooksniff.models.ListResponseEndpointOut;
-import com.hooksniff.models.MessageOut;
 
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+/**
+ * Endpoint API — HookSniff /v1/endpoints
+ * Note: HookSniff uses JWT auth (no app_id needed).
+ */
 public class Endpoint {
     private final HookSniffHttpClient client;
 
@@ -30,41 +27,33 @@ public class Endpoint {
         this.client = client;
     }
 
-    public ListResponseEndpointOut list(final String appId) throws IOException, ApiException {
-        return this.list(appId, new EndpointListOptions());
+    public List<EndpointOut> list() throws IOException, ApiException {
+        return this.list(new EndpointListOptions());
     }
 
-    public ListResponseEndpointOut list(final String appId, final EndpointListOptions options)
+    public List<EndpointOut> list(final EndpointListOptions options)
             throws IOException, ApiException {
         HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(String.format("/api/v1/app/%s/endpoint", appId));
+                this.client.newUrlBuilder().encodedPath("/v1/endpoints");
         if (options.limit != null) {
             url.addQueryParameter("limit", Utils.serializeQueryParam(options.limit));
         }
-        if (options.iterator != null) {
-            url.addQueryParameter("iterator", options.iterator);
-        }
-        if (options.order != null) {
-            url.addQueryParameter("order", Utils.serializeQueryParam(options.order));
+        if (options.page != null) {
+            url.addQueryParameter("page", Utils.serializeQueryParam(options.page));
         }
         return this.client.executeRequest(
-                "GET", url.build(), null, null, ListResponseEndpointOut.class);
+                "GET", url.build(), null, null, Utils.getListType(EndpointOut.class));
     }
 
-    public EndpointOut create(final String appId, final EndpointIn endpointIn)
+    public EndpointOut create(final EndpointIn endpointIn)
             throws IOException, ApiException {
-        return this.create(appId, endpointIn, new EndpointCreateOptions());
+        return this.create(endpointIn, new EndpointCreateOptions());
     }
 
-    public EndpointOut create(
-            final String appId, final EndpointIn endpointIn, final EndpointCreateOptions options)
+    public EndpointOut create(final EndpointIn endpointIn, final EndpointCreateOptions options)
             throws IOException, ApiException {
         HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(String.format("/api/v1/app/%s/endpoint", appId));
+                this.client.newUrlBuilder().encodedPath("/v1/endpoints");
         Map<String, String> headers = new HashMap<>();
         if (options.idempotencyKey != null) {
             headers.put("idempotency-key", options.idempotencyKey);
@@ -73,251 +62,56 @@ public class Endpoint {
                 "POST", url.build(), Headers.of(headers), endpointIn, EndpointOut.class);
     }
 
-    public EndpointOut get(final String appId, final String endpointId)
-            throws IOException, ApiException {
+    public EndpointOut get(final String endpointId) throws IOException, ApiException {
         HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format("/api/v1/app/%s/endpoint/%s", appId, endpointId));
+                this.client.newUrlBuilder()
+                        .encodedPath("/v1/endpoints/" + endpointId);
         return this.client.executeRequest("GET", url.build(), null, null, EndpointOut.class);
     }
 
-    public EndpointOut update(
-            final String appId, final String endpointId, final EndpointUpdate endpointUpdate)
+    public EndpointOut update(final String endpointId, final EndpointUpdate endpointUpdate)
             throws IOException, ApiException {
         HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format("/api/v1/app/%s/endpoint/%s", appId, endpointId));
+                this.client.newUrlBuilder()
+                        .encodedPath("/v1/endpoints/" + endpointId);
         return this.client.executeRequest(
                 "PUT", url.build(), null, endpointUpdate, EndpointOut.class);
     }
 
-    public void delete(final String appId, final String endpointId)
-            throws IOException, ApiException {
+    public void delete(final String endpointId) throws IOException, ApiException {
         HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format("/api/v1/app/%s/endpoint/%s", appId, endpointId));
+                this.client.newUrlBuilder()
+                        .encodedPath("/v1/endpoints/" + endpointId);
         this.client.executeRequest("DELETE", url.build(), null, null, null);
     }
 
-    public EndpointOut patch(
-            final String appId, final String endpointId, final EndpointPatch endpointPatch)
+    public EndpointOut patch(final String endpointId, final EndpointPatch endpointPatch)
             throws IOException, ApiException {
         HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format("/api/v1/app/%s/endpoint/%s", appId, endpointId));
+                this.client.newUrlBuilder()
+                        .encodedPath("/v1/endpoints/" + endpointId);
         return this.client.executeRequest(
                 "PATCH", url.build(), null, endpointPatch, EndpointOut.class);
     }
 
-    public EndpointHeadersOut getHeaders(final String appId, final String endpointId)
+    public Map<String, Object> rotateSecret(final String endpointId)
             throws IOException, ApiException {
         HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format(
-                                        "/api/v1/app/%s/endpoint/%s/headers", appId, endpointId));
-        return this.client.executeRequest("GET", url.build(), null, null, EndpointHeadersOut.class);
+                this.client.newUrlBuilder()
+                        .encodedPath("/v1/endpoints/" + endpointId + "/rotate-secret");
+        return this.client.executeRequest("POST", url.build(), null, null, Map.class);
     }
 
-    public void updateHeaders(
-            final String appId, final String endpointId, final EndpointHeadersIn endpointHeadersIn)
+    public Map<String, Object> getStats(final String endpointId)
+            throws IOException, ApiException {
+        return this.getStats(endpointId, new EndpointGetStatsOptions());
+    }
+
+    public Map<String, Object> getStats(final String endpointId, final EndpointGetStatsOptions options)
             throws IOException, ApiException {
         HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format(
-                                        "/api/v1/app/%s/endpoint/%s/headers", appId, endpointId));
-        this.client.executeRequest("PUT", url.build(), null, endpointHeadersIn, null);
-    }
-
-    public void patchHeaders(
-            final String appId,
-            final String endpointId,
-            final EndpointHeadersPatchIn endpointHeadersPatchIn)
-            throws IOException, ApiException {
-        HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format(
-                                        "/api/v1/app/%s/endpoint/%s/headers", appId, endpointId));
-        this.client.executeRequest("PATCH", url.build(), null, endpointHeadersPatchIn, null);
-    }
-
-    public EndpointSecretOut getSecret(final String appId, final String endpointId)
-            throws IOException, ApiException {
-        HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format(
-                                        "/api/v1/app/%s/endpoint/%s/secret", appId, endpointId));
-        return this.client.executeRequest("GET", url.build(), null, null, EndpointSecretOut.class);
-    }
-
-    public void rotateSecret(
-            final String appId,
-            final String endpointId,
-            final EndpointSecretRotateIn endpointSecretRotateIn)
-            throws IOException, ApiException {
-        this.rotateSecret(
-                appId, endpointId, endpointSecretRotateIn, new EndpointRotateSecretOptions());
-    }
-
-    public void rotateSecret(
-            final String appId,
-            final String endpointId,
-            final EndpointSecretRotateIn endpointSecretRotateIn,
-            final EndpointRotateSecretOptions options)
-            throws IOException, ApiException {
-        HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format(
-                                        "/api/v1/app/%s/endpoint/%s/secret/rotate",
-                                        appId, endpointId));
-        Map<String, String> headers = new HashMap<>();
-        if (options.idempotencyKey != null) {
-            headers.put("idempotency-key", options.idempotencyKey);
-        }
-        this.client.executeRequest(
-                "POST", url.build(), Headers.of(headers), endpointSecretRotateIn, null);
-    }
-
-    public MessageOut sendExample(
-            final String appId, final String endpointId, final EventExampleIn eventExampleIn)
-            throws IOException, ApiException {
-        return this.sendExample(
-                appId, endpointId, eventExampleIn, new EndpointSendExampleOptions());
-    }
-
-    public MessageOut sendExample(
-            final String appId,
-            final String endpointId,
-            final EventExampleIn eventExampleIn,
-            final EndpointSendExampleOptions options)
-            throws IOException, ApiException {
-        HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format(
-                                        "/api/v1/app/%s/endpoint/%s/send-example",
-                                        appId, endpointId));
-        Map<String, String> headers = new HashMap<>();
-        if (options.idempotencyKey != null) {
-            headers.put("idempotency-key", options.idempotencyKey);
-        }
-        return this.client.executeRequest(
-                "POST", url.build(), Headers.of(headers), eventExampleIn, MessageOut.class);
-    }
-
-    /** Recover failed webhooks using a recovery ID. */
-    public void recover(
-            final String appId, final String endpointId, final EndpointRecoverOptions options)
-            throws IOException, ApiException {
-        HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format(
-                                        "/api/v1/app/%s/endpoint/%s/recover",
-                                        appId, endpointId));
-        Map<String, String> headers = new HashMap<>();
-        if (options.idempotencyKey != null) {
-            headers.put("idempotency-key", options.idempotencyKey);
-        }
-        this.client.executeRequest("POST", url.build(), Headers.of(headers), null, null);
-    }
-
-    /** Recover failed webhooks using a recovery ID. */
-    public void recover(final String appId, final String endpointId)
-            throws IOException, ApiException {
-        this.recover(appId, endpointId, new EndpointRecoverOptions());
-    }
-
-    /** Replay missing messages to the endpoint. */
-    public void replayMissing(
-            final String appId,
-            final String endpointId,
-            final EndpointReplayMissingOptions options)
-            throws IOException, ApiException {
-        HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format(
-                                        "/api/v1/app/%s/endpoint/%s/replay-missing",
-                                        appId, endpointId));
-        Map<String, String> headers = new HashMap<>();
-        if (options.idempotencyKey != null) {
-            headers.put("idempotency-key", options.idempotencyKey);
-        }
-        this.client.executeRequest("POST", url.build(), Headers.of(headers), null, null);
-    }
-
-    /** Replay missing messages to the endpoint. */
-    public void replayMissing(final String appId, final String endpointId)
-            throws IOException, ApiException {
-        this.replayMissing(appId, endpointId, new EndpointReplayMissingOptions());
-    }
-
-    /** Bulk replay messages to the endpoint. */
-    public void bulkReplay(
-            final String appId,
-            final String endpointId,
-            final EndpointBulkReplayOptions options)
-            throws IOException, ApiException {
-        HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format(
-                                        "/api/v1/app/%s/endpoint/%s/bulk-replay",
-                                        appId, endpointId));
-        Map<String, String> headers = new HashMap<>();
-        if (options.idempotencyKey != null) {
-            headers.put("idempotency-key", options.idempotencyKey);
-        }
-        this.client.executeRequest("POST", url.build(), Headers.of(headers), null, null);
-    }
-
-    /** Bulk replay messages to the endpoint. */
-    public void bulkReplay(final String appId, final String endpointId)
-            throws IOException, ApiException {
-        this.bulkReplay(appId, endpointId, new EndpointBulkReplayOptions());
-    }
-
-    /** Get endpoint stats for the given app/endpoint. */
-    public Map<String, Object> getStats(final String appId, final String endpointId)
-            throws IOException, ApiException {
-        return this.getStats(appId, endpointId, new EndpointGetStatsOptions());
-    }
-
-    /** Get endpoint stats for the given app/endpoint. */
-    public Map<String, Object> getStats(
-            final String appId,
-            final String endpointId,
-            final EndpointGetStatsOptions options)
-            throws IOException, ApiException {
-        HttpUrl.Builder url =
-                this.client
-                        .newUrlBuilder()
-                        .encodedPath(
-                                String.format(
-                                        "/api/v1/app/%s/endpoint/%s/stats",
-                                        appId, endpointId));
+                this.client.newUrlBuilder()
+                        .encodedPath("/v1/endpoints/" + endpointId + "/stats");
         if (options.since != null) {
             url.addQueryParameter("since", Utils.serializeQueryParam(options.since));
         }

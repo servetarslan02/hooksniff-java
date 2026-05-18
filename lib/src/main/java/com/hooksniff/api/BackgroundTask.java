@@ -12,17 +12,17 @@ public class BackgroundTask {
     public BackgroundTask(HookSniffHttpClient client) { this.client = client; }
 
     public List<Map<String, Object>> list() throws IOException, ApiException {
-        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/api/v1/background-tasks");
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/background-tasks");
         return this.client.executeRequest("GET", url.build(), null, null, List.class);
     }
 
     public Map<String, Object> get(String taskId) throws IOException, ApiException {
-        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/api/v1/background-tasks/" + taskId);
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/background-tasks/" + taskId);
         return this.client.executeRequest("GET", url.build(), null, null, Map.class);
     }
 
     public Map<String, Object> cancel(String taskId) throws IOException, ApiException {
-        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/api/v1/background-tasks/" + taskId);
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/background-tasks/" + taskId);
         return this.client.executeRequest("PUT", url.build(), null, null, Map.class);
     }
 }

@@ -26,7 +26,7 @@ public class EndpointAutoConfig {
                         .newUrlBuilder()
                         .encodedPath(
                                 String.format(
-                                        "/api/v1/app/%s/endpoint/%s/auto-config",
+                                        "/v1/endpoints/%s/auto-config",
                                         appId, endpointId));
         return this.client.executeRequest("PUT", url.build(), null, subscribeIn, EndpointOut.class);
     }

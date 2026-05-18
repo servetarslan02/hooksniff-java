@@ -12,17 +12,17 @@ public class Inbound {
     public Inbound(HookSniffHttpClient client) { this.client = client; }
 
     public List<Map<String, Object>> listConfigs() throws IOException, ApiException {
-        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/api/v1/inbound/configs");
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/inbound/configs");
         return this.client.executeRequest("GET", url.build(), null, null, List.class);
     }
 
     public Map<String, Object> createConfig(Map<String, Object> body) throws IOException, ApiException {
-        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/api/v1/inbound/configs");
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/inbound/configs");
         return this.client.executeRequest("POST", url.build(), null, body, Map.class);
     }
 
     public Map<String, Object> handleInbound(Map<String, Object> body) throws IOException, ApiException {
-        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/api/v1/inbound");
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/inbound");
         return this.client.executeRequest("POST", url.build(), null, body, Map.class);
     }
 }

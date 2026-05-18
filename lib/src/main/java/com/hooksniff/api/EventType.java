@@ -35,7 +35,7 @@ public class EventType {
     /** Return the list of event types. */
     public ListResponseEventTypeOut list(final EventTypeListOptions options)
             throws IOException, ApiException {
-        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/api/v1/event-type");
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/events");
         if (options.limit != null) {
             url.addQueryParameter("limit", Utils.serializeQueryParam(options.limit));
         }
@@ -76,7 +76,7 @@ public class EventType {
      */
     public EventTypeOut create(final EventTypeIn eventTypeIn, final EventTypeCreateOptions options)
             throws IOException, ApiException {
-        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/api/v1/event-type");
+        HttpUrl.Builder url = this.client.newUrlBuilder().encodedPath("/v1/events");
         Map<String, String> headers = new HashMap<>();
         if (options.idempotencyKey != null) {
             headers.put("idempotency-key", options.idempotencyKey);
@@ -108,7 +108,7 @@ public class EventType {
             final EventTypeImportOpenapiOptions options)
             throws IOException, ApiException {
         HttpUrl.Builder url =
-                this.client.newUrlBuilder().encodedPath("/api/v1/event-type/import/openapi");
+                this.client.newUrlBuilder().encodedPath("/v1/events/import/openapi");
         Map<String, String> headers = new HashMap<>();
         if (options.idempotencyKey != null) {
             headers.put("idempotency-key", options.idempotencyKey);
@@ -126,7 +126,7 @@ public class EventType {
         HttpUrl.Builder url =
                 this.client
                         .newUrlBuilder()
-                        .encodedPath(String.format("/api/v1/event-type/%s", eventTypeName));
+                        .encodedPath(String.format("/v1/events/%s", eventTypeName));
         return this.client.executeRequest("GET", url.build(), null, null, EventTypeOut.class);
     }
 
@@ -136,7 +136,7 @@ public class EventType {
         HttpUrl.Builder url =
                 this.client
                         .newUrlBuilder()
-                        .encodedPath(String.format("/api/v1/event-type/%s", eventTypeName));
+                        .encodedPath(String.format("/v1/events/%s", eventTypeName));
         return this.client.executeRequest(
                 "PUT", url.build(), null, eventTypeUpdate, EventTypeOut.class);
     }
@@ -166,7 +166,7 @@ public class EventType {
         HttpUrl.Builder url =
                 this.client
                         .newUrlBuilder()
-                        .encodedPath(String.format("/api/v1/event-type/%s", eventTypeName));
+                        .encodedPath(String.format("/v1/events/%s", eventTypeName));
         if (options.expunge != null) {
             url.addQueryParameter("expunge", Utils.serializeQueryParam(options.expunge));
         }
@@ -179,7 +179,7 @@ public class EventType {
         HttpUrl.Builder url =
                 this.client
                         .newUrlBuilder()
-                        .encodedPath(String.format("/api/v1/event-type/%s", eventTypeName));
+                        .encodedPath(String.format("/v1/events/%s", eventTypeName));
         return this.client.executeRequest(
                 "PATCH", url.build(), null, eventTypePatch, EventTypeOut.class);
     }
