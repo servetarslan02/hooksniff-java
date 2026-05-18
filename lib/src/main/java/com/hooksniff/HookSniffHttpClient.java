@@ -48,14 +48,20 @@ public class HookSniffHttpClient {
             RequestBody body = RequestBody.create(jsonBody, MediaType.parse("application/json"));
             reqBuilder.method(method, body);
         } else {
-            reqBuilder.method(method, null);
+            // For methods that require a body (POST, PUT, PATCH), send empty JSON object
+            if ("POST".equalsIgnoreCase(method) || "PUT".equalsIgnoreCase(method) || "PATCH".equalsIgnoreCase(method)) {
+                RequestBody emptyBody = RequestBody.create("{}", MediaType.parse("application/json"));
+                reqBuilder.method(method, emptyBody);
+            } else {
+                reqBuilder.method(method, null);
+            }
         }
 
         // Add default headers
         defaultHeaders.forEach(reqBuilder::addHeader);
 
         String idempotencyKey = headers == null ? null : headers.get("idempotency-key");
-        if ((idempotencyKey == null || idempotencyKey.isEmpty()) && method.toUpperCase() == "POST") {
+        if ((idempotencyKey == null || idempotencyKey.isEmpty()) && "POST".equals(method.toUpperCase())) {
                 reqBuilder.addHeader("idempotency-key", "auto_" + UUID.randomUUID().toString());
         }
 
@@ -96,8 +102,11 @@ public class HookSniffHttpClient {
         while (response.code() >= 500 && retryCount < retrySchedule.size()) {
             response.close();
 
-            // Use LockSupport for precise parking instead of Thread.sleep
-            LockSupport.parkNanos(retrySchedule.get(retryCount) * 1_000_000); // Convert ms to ns
+            // Exponential backoff with jitter
+            long baseDelay = retrySchedule.get(retryCount);
+            long jitter = ThreadLocalRandom.current().nextLong(0, baseDelay / 2 + 1);
+            long totalDelay = baseDelay + jitter;
+            LockSupport.parkNanos(totalDelay * 1_000_000); // Convert ms to ns
 
             Request retryRequest =
                     request.newBuilder()

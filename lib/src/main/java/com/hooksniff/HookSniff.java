@@ -67,4 +67,17 @@ public class HookSniff {
 
     public Integration integration() { return integration; }
     public Stream stream() { return stream; }
+    public Authentication authentication() { return authentication; }
+    public Endpoint endpoint() { return endpoint; }
+    public EventType eventType() { return eventType; }
+    public Health health() { return health; }
+    public Message message() { return message; }
+    public MessageAttempt messageAttempt() { return messageAttempt; }
+    public Statistics statistics() { return statistics; }
+    public Environment environment() { return environment; }
+    public BackgroundTask backgroundTask() { return backgroundTask; }
+    public OperationalWebhook operationalWebhook() { return operationalWebhook; }
+    public MessagePoller messagePoller() { return messagePoller; }
+    public Inbound inbound() { return inbound; }
+    public Connector connector() { return connector; }
 }

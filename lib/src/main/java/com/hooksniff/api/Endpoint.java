@@ -222,4 +222,108 @@ public class Endpoint {
         return this.client.executeRequest(
                 "POST", url.build(), Headers.of(headers), eventExampleIn, MessageOut.class);
     }
+
+    /** Recover failed webhooks using a recovery ID. */
+    public void recover(
+            final String appId, final String endpointId, final EndpointRecoverOptions options)
+            throws IOException, ApiException {
+        HttpUrl.Builder url =
+                this.client
+                        .newUrlBuilder()
+                        .encodedPath(
+                                String.format(
+                                        "/api/v1/app/%s/endpoint/%s/recover",
+                                        appId, endpointId));
+        Map<String, String> headers = new HashMap<>();
+        if (options.idempotencyKey != null) {
+            headers.put("idempotency-key", options.idempotencyKey);
+        }
+        this.client.executeRequest("POST", url.build(), Headers.of(headers), null, null);
+    }
+
+    /** Recover failed webhooks using a recovery ID. */
+    public void recover(final String appId, final String endpointId)
+            throws IOException, ApiException {
+        this.recover(appId, endpointId, new EndpointRecoverOptions());
+    }
+
+    /** Replay missing messages to the endpoint. */
+    public void replayMissing(
+            final String appId,
+            final String endpointId,
+            final EndpointReplayMissingOptions options)
+            throws IOException, ApiException {
+        HttpUrl.Builder url =
+                this.client
+                        .newUrlBuilder()
+                        .encodedPath(
+                                String.format(
+                                        "/api/v1/app/%s/endpoint/%s/replay-missing",
+                                        appId, endpointId));
+        Map<String, String> headers = new HashMap<>();
+        if (options.idempotencyKey != null) {
+            headers.put("idempotency-key", options.idempotencyKey);
+        }
+        this.client.executeRequest("POST", url.build(), Headers.of(headers), null, null);
+    }
+
+    /** Replay missing messages to the endpoint. */
+    public void replayMissing(final String appId, final String endpointId)
+            throws IOException, ApiException {
+        this.replayMissing(appId, endpointId, new EndpointReplayMissingOptions());
+    }
+
+    /** Bulk replay messages to the endpoint. */
+    public void bulkReplay(
+            final String appId,
+            final String endpointId,
+            final EndpointBulkReplayOptions options)
+            throws IOException, ApiException {
+        HttpUrl.Builder url =
+                this.client
+                        .newUrlBuilder()
+                        .encodedPath(
+                                String.format(
+                                        "/api/v1/app/%s/endpoint/%s/bulk-replay",
+                                        appId, endpointId));
+        Map<String, String> headers = new HashMap<>();
+        if (options.idempotencyKey != null) {
+            headers.put("idempotency-key", options.idempotencyKey);
+        }
+        this.client.executeRequest("POST", url.build(), Headers.of(headers), null, null);
+    }
+
+    /** Bulk replay messages to the endpoint. */
+    public void bulkReplay(final String appId, final String endpointId)
+            throws IOException, ApiException {
+        this.bulkReplay(appId, endpointId, new EndpointBulkReplayOptions());
+    }
+
+    /** Get endpoint stats for the given app/endpoint. */
+    public Map<String, Object> getStats(final String appId, final String endpointId)
+            throws IOException, ApiException {
+        return this.getStats(appId, endpointId, new EndpointGetStatsOptions());
+    }
+
+    /** Get endpoint stats for the given app/endpoint. */
+    public Map<String, Object> getStats(
+            final String appId,
+            final String endpointId,
+            final EndpointGetStatsOptions options)
+            throws IOException, ApiException {
+        HttpUrl.Builder url =
+                this.client
+                        .newUrlBuilder()
+                        .encodedPath(
+                                String.format(
+                                        "/api/v1/app/%s/endpoint/%s/stats",
+                                        appId, endpointId));
+        if (options.since != null) {
+            url.addQueryParameter("since", Utils.serializeQueryParam(options.since));
+        }
+        if (options.until != null) {
+            url.addQueryParameter("until", Utils.serializeQueryParam(options.until));
+        }
+        return this.client.executeRequest("GET", url.build(), null, null, Map.class);
+    }
 }
