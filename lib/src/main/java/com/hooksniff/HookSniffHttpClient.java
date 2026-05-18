@@ -96,14 +96,37 @@ public class HookSniffHttpClient {
     }
 
     private Response executeRequestWithRetry(Request request, String body) throws IOException {
-        Response response = client.newCall(request).execute();
+        Response response = null;
 
         int retryCount = 0;
         while (retryCount < retrySchedule.size()) {
+            try {
+                if (response != null) {
+                    response.close();
+                }
+                response = client.newCall(request).execute();
+            } catch (java.net.SocketTimeoutException | java.net.SocketException e) {
+                // Timeout — retry with backoff
+                if (retryCount >= retrySchedule.size() - 1) {
+                    throw e;
+                }
+                long delayMs = retrySchedule.get(retryCount);
+                LockSupport.parkNanos(delayMs * 1_000_000);
+                request = request.newBuilder()
+                        .header("hooksniff-retry-count", String.valueOf(retryCount + 1))
+                        .build();
+                retryCount++;
+                continue;
+            }
+
             int statusCode = response.code();
 
             // Only retry on 429 (rate limit) or 5xx (server error)
             if (statusCode != 429 && statusCode < 500) {
+                break;
+            }
+
+            if (retryCount >= retrySchedule.size() - 1) {
                 break;
             }
 
@@ -129,14 +152,17 @@ public class HookSniffHttpClient {
                 delayMs = baseDelay + jitter;
             }
 
-            LockSupport.parkNanos(delayMs * 1_000_000); // Convert ms to ns
+            LockSupport.parkNanos(delayMs * 1_000_000);
 
-            Request retryRequest =
-                    request.newBuilder()
-                            .header("hooksniff-retry-count", String.valueOf(retryCount + 1))
-                            .build();
-            response = client.newCall(retryRequest).execute();
+            request = request.newBuilder()
+                    .header("hooksniff-retry-count", String.valueOf(retryCount + 1))
+                    .build();
+            response = null;
             retryCount++;
+        }
+
+        if (response == null) {
+            response = client.newCall(request).execute();
         }
         return response;
     }
