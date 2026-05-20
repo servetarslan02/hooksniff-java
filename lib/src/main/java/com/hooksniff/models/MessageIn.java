@@ -22,14 +22,14 @@ import java.util.Set;
 @JsonAutoDetect(getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class MessageIn {
     @JsonProperty private Set<String> channels;
-    @JsonProperty private OffsetDateTime deliverAt;
-    @JsonProperty private String eventId;
-    @JsonProperty private String eventType;
-    @JsonProperty private String payload;
-    @JsonProperty private Long payloadRetentionHours;
-    @JsonProperty private Long payloadRetentionPeriod;
+    @JsonProperty("deliver_at") private OffsetDateTime deliverAt;
+    @JsonProperty("event_id") private String eventId;
+    @JsonProperty("event") private String eventType;
+    @JsonProperty("data") private String payload;
+    @JsonProperty("payload_retention_hours") private Long payloadRetentionHours;
+    @JsonProperty("payload_retention_period") private Long payloadRetentionPeriod;
     @JsonProperty private Set<String> tags;
-    @JsonProperty private Map<String, Object> transformationsParams;
+    @JsonProperty("transformations_params") private Map<String, Object> transformationsParams;
 
     public MessageIn() {}
 
