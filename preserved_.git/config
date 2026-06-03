@@ -1,0 +1,21 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = https://github.com/servetarslan02/hooksniff-java
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[gc]
+	auto = 0
+[includeIf "gitdir:/home/runner/work/HookSniff/HookSniff/sdk-repo/.git"]
+	path = /home/runner/work/_temp/git-credentials-a15675e6-4ce3-46e2-9b1c-384bb8214c6c.config
+[includeIf "gitdir:/home/runner/work/HookSniff/HookSniff/sdk-repo/.git/worktrees/*"]
+	path = /home/runner/work/_temp/git-credentials-a15675e6-4ce3-46e2-9b1c-384bb8214c6c.config
+[includeIf "gitdir:/github/workspace/sdk-repo/.git"]
+	path = /github/runner_temp/git-credentials-a15675e6-4ce3-46e2-9b1c-384bb8214c6c.config
+[includeIf "gitdir:/github/workspace/sdk-repo/.git/worktrees/*"]
+	path = /github/runner_temp/git-credentials-a15675e6-4ce3-46e2-9b1c-384bb8214c6c.config
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
