@@ -1,17 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.openapitools</groupId>
-    <artifactId>openapi-java-client</artifactId>
+    <groupId>com.hooksniff</groupId>
+    <artifactId>hooksniff</artifactId>
     <packaging>jar</packaging>
-    <name>openapi-java-client</name>
+    <name>hooksniff</name>
     <version>1.0.0</version>
-    <url>https://github.com/openapitools/openapi-generator</url>
-    <description>OpenAPI Java</description>
+    <url>https://github.com/servetarslan02/hooksniff-java</url>
+    <description>HookSniff webhook delivery platform Java SDK</description>
     <scm>
-        <connection>scm:git:git@github.com:openapitools/openapi-generator.git</connection>
-        <developerConnection>scm:git:git@github.com:openapitools/openapi-generator.git</developerConnection>
-        <url>https://github.com/openapitools/openapi-generator</url>
+        <connection>scm:git:git@github.com:servetarslan02/hooksniff-java.git</connection>
+        <developerConnection>scm:git:git@github.com:servetarslan02/hooksniff-java.git</developerConnection>
+        <url>https://github.com/servetarslan02/hooksniff-java</url>
     </scm>
 
     <licenses>
@@ -296,7 +296,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.openapitools</groupId>
+            <groupId>com.hooksniff</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
             <version>${jackson-databind-nullable-version}</version>
         </dependency>
