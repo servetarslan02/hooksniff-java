@@ -27,7 +27,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 
 
-import org.openapitools.client.model.OutboundIpsResponse;
+import org.openapitools.client.model.OutboundIPsResponse;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -137,7 +137,7 @@ public class OutboundIpsApi {
     /**
      * Get outbound IP addresses for firewall whitelisting
      * 
-     * @return OutboundIpsResponse
+     * @return OutboundIPsResponse
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table border="1">
@@ -146,15 +146,15 @@ public class OutboundIpsApi {
         <tr><td> 200 </td><td> IP list </td><td>  -  </td></tr>
      </table>
      */
-    public OutboundIpsResponse outboundIpsGet() throws ApiException {
-        ApiResponse<OutboundIpsResponse> localVarResp = outboundIpsGetWithHttpInfo();
+    public OutboundIPsResponse outboundIpsGet() throws ApiException {
+        ApiResponse<OutboundIPsResponse> localVarResp = outboundIpsGetWithHttpInfo();
         return localVarResp.getData();
     }
 
     /**
      * Get outbound IP addresses for firewall whitelisting
      * 
-     * @return ApiResponse&lt;OutboundIpsResponse&gt;
+     * @return ApiResponse&lt;OutboundIPsResponse&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table border="1">
@@ -163,9 +163,9 @@ public class OutboundIpsApi {
         <tr><td> 200 </td><td> IP list </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<OutboundIpsResponse> outboundIpsGetWithHttpInfo() throws ApiException {
+    public ApiResponse<OutboundIPsResponse> outboundIpsGetWithHttpInfo() throws ApiException {
         okhttp3.Call localVarCall = outboundIpsGetValidateBeforeCall(null);
-        Type localVarReturnType = new TypeToken<OutboundIpsResponse>(){}.getType();
+        Type localVarReturnType = new TypeToken<OutboundIPsResponse>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
@@ -182,10 +182,10 @@ public class OutboundIpsApi {
         <tr><td> 200 </td><td> IP list </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call outboundIpsGetAsync(final ApiCallback<OutboundIpsResponse> _callback) throws ApiException {
+    public okhttp3.Call outboundIpsGetAsync(final ApiCallback<OutboundIPsResponse> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = outboundIpsGetValidateBeforeCall(_callback);
-        Type localVarReturnType = new TypeToken<OutboundIpsResponse>(){}.getType();
+        Type localVarReturnType = new TypeToken<OutboundIPsResponse>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }

@@ -48,10 +48,10 @@ import java.util.Set;
 import org.openapitools.client.JSON;
 
 /**
- * OutboundIpsResponse
+ * OutboundIPsResponse
  */
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-06-03T11:26:07.739612497Z[Etc/UTC]", comments = "Generator version: 7.22.0")
-public class OutboundIpsResponse {
+public class OutboundIPsResponse {
   public static final String SERIALIZED_NAME_IPS = "ips";
   @SerializedName(SERIALIZED_NAME_IPS)
   @javax.annotation.Nonnull
@@ -62,15 +62,15 @@ public class OutboundIpsResponse {
   @javax.annotation.Nonnull
   private String updatedAt;
 
-  public OutboundIpsResponse() {
+  public OutboundIPsResponse() {
   }
 
-  public OutboundIpsResponse ips(@javax.annotation.Nonnull List<String> ips) {
+  public OutboundIPsResponse ips(@javax.annotation.Nonnull List<String> ips) {
     this.ips = ips;
     return this;
   }
 
-  public OutboundIpsResponse addIpsItem(String ipsItem) {
+  public OutboundIPsResponse addIpsItem(String ipsItem) {
     if (this.ips == null) {
       this.ips = new ArrayList<>();
     }
@@ -92,7 +92,7 @@ public class OutboundIpsResponse {
   }
 
 
-  public OutboundIpsResponse updatedAt(@javax.annotation.Nonnull String updatedAt) {
+  public OutboundIPsResponse updatedAt(@javax.annotation.Nonnull String updatedAt) {
     this.updatedAt = updatedAt;
     return this;
   }
@@ -120,7 +120,7 @@ public class OutboundIpsResponse {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    OutboundIpsResponse outboundIpsResponse = (OutboundIpsResponse) o;
+    OutboundIPsResponse outboundIpsResponse = (OutboundIPsResponse) o;
     return Objects.equals(this.ips, outboundIpsResponse.ips) &&
         Objects.equals(this.updatedAt, outboundIpsResponse.updatedAt);
   }
@@ -133,7 +133,7 @@ public class OutboundIpsResponse {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class OutboundIpsResponse {\n");
+    sb.append("class OutboundIPsResponse {\n");
     sb.append("    ips: ").append(toIndentedString(ips)).append("\n");
     sb.append("    updatedAt: ").append(toIndentedString(updatedAt)).append("\n");
     sb.append("}");
@@ -164,25 +164,25 @@ public class OutboundIpsResponse {
    * Validates the JSON Element and throws an exception if issues found
    *
    * @param jsonElement JSON Element
-   * @throws IOException if the JSON Element is invalid with respect to OutboundIpsResponse
+   * @throws IOException if the JSON Element is invalid with respect to OutboundIPsResponse
    */
   public static void validateJsonElement(JsonElement jsonElement) throws IOException {
       if (jsonElement == null) {
-        if (!OutboundIpsResponse.openapiRequiredFields.isEmpty()) { // has required fields but JSON element is null
-          throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "The required field(s) %s in OutboundIpsResponse is not found in the empty JSON string", OutboundIpsResponse.openapiRequiredFields.toString()));
+        if (!OutboundIPsResponse.openapiRequiredFields.isEmpty()) { // has required fields but JSON element is null
+          throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "The required field(s) %s in OutboundIPsResponse is not found in the empty JSON string", OutboundIPsResponse.openapiRequiredFields.toString()));
         }
       }
 
       Set<Map.Entry<String, JsonElement>> entries = jsonElement.getAsJsonObject().entrySet();
       // check to see if the JSON string contains additional fields
       for (Map.Entry<String, JsonElement> entry : entries) {
-        if (!OutboundIpsResponse.openapiFields.contains(entry.getKey())) {
-          throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "The field `%s` in the JSON string is not defined in the `OutboundIpsResponse` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
+        if (!OutboundIPsResponse.openapiFields.contains(entry.getKey())) {
+          throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "The field `%s` in the JSON string is not defined in the `OutboundIPsResponse` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
         }
       }
 
       // check to make sure all required properties/fields are present in the JSON string
-      for (String requiredField : OutboundIpsResponse.openapiRequiredFields) {
+      for (String requiredField : OutboundIPsResponse.openapiRequiredFields) {
         if (jsonElement.getAsJsonObject().get(requiredField) == null) {
           throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "The required field `%s` is not found in the JSON string: %s", requiredField, jsonElement.toString()));
         }
@@ -203,22 +203,22 @@ public class OutboundIpsResponse {
     @SuppressWarnings("unchecked")
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-       if (!OutboundIpsResponse.class.isAssignableFrom(type.getRawType())) {
-         return null; // this class only serializes 'OutboundIpsResponse' and its subtypes
+       if (!OutboundIPsResponse.class.isAssignableFrom(type.getRawType())) {
+         return null; // this class only serializes 'OutboundIPsResponse' and its subtypes
        }
        final TypeAdapter<JsonElement> elementAdapter = gson.getAdapter(JsonElement.class);
-       final TypeAdapter<OutboundIpsResponse> thisAdapter
-                        = gson.getDelegateAdapter(this, TypeToken.get(OutboundIpsResponse.class));
+       final TypeAdapter<OutboundIPsResponse> thisAdapter
+                        = gson.getDelegateAdapter(this, TypeToken.get(OutboundIPsResponse.class));
 
-       return (TypeAdapter<T>) new TypeAdapter<OutboundIpsResponse>() {
+       return (TypeAdapter<T>) new TypeAdapter<OutboundIPsResponse>() {
            @Override
-           public void write(JsonWriter out, OutboundIpsResponse value) throws IOException {
+           public void write(JsonWriter out, OutboundIPsResponse value) throws IOException {
              JsonObject obj = thisAdapter.toJsonTree(value).getAsJsonObject();
              elementAdapter.write(out, obj);
            }
 
            @Override
-           public OutboundIpsResponse read(JsonReader in) throws IOException {
+           public OutboundIPsResponse read(JsonReader in) throws IOException {
              JsonElement jsonElement = elementAdapter.read(in);
              validateJsonElement(jsonElement);
              return thisAdapter.fromJsonTree(jsonElement);
@@ -229,18 +229,18 @@ public class OutboundIpsResponse {
   }
 
   /**
-   * Create an instance of OutboundIpsResponse given an JSON string
+   * Create an instance of OutboundIPsResponse given an JSON string
    *
    * @param jsonString JSON string
-   * @return An instance of OutboundIpsResponse
-   * @throws IOException if the JSON string is invalid with respect to OutboundIpsResponse
+   * @return An instance of OutboundIPsResponse
+   * @throws IOException if the JSON string is invalid with respect to OutboundIPsResponse
    */
-  public static OutboundIpsResponse fromJson(String jsonString) throws IOException {
-    return JSON.getGson().fromJson(jsonString, OutboundIpsResponse.class);
+  public static OutboundIPsResponse fromJson(String jsonString) throws IOException {
+    return JSON.getGson().fromJson(jsonString, OutboundIPsResponse.class);
   }
 
   /**
-   * Convert an instance of OutboundIpsResponse to an JSON string
+   * Convert an instance of OutboundIPsResponse to an JSON string
    *
    * @return JSON string
    */

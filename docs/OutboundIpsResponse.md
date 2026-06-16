@@ -1,6 +1,6 @@
 
 
-# OutboundIpsResponse
+# OutboundIPsResponse
 
 
 ## Properties

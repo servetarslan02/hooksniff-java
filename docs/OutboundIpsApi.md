@@ -9,7 +9,7 @@ All URIs are relative to *https://hooksniff-api-e6ztf3x2ma-ew.a.run.app/v1*
 
 <a id="outboundIpsGet"></a>
 # **outboundIpsGet**
-> OutboundIpsResponse outboundIpsGet()
+> OutboundIPsResponse outboundIpsGet()
 
 Get outbound IP addresses for firewall whitelisting
 
@@ -29,7 +29,7 @@ public class Example {
 
     OutboundIpsApi apiInstance = new OutboundIpsApi(defaultClient);
     try {
-      OutboundIpsResponse result = apiInstance.outboundIpsGet();
+      OutboundIPsResponse result = apiInstance.outboundIpsGet();
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling OutboundIpsApi#outboundIpsGet");
@@ -47,7 +47,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**OutboundIpsResponse**](OutboundIpsResponse.md)
+[**OutboundIPsResponse**](OutboundIPsResponse.md)
 
 ### Authorization
 

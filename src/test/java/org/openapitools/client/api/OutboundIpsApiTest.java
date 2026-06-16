@@ -14,7 +14,7 @@
 package org.openapitools.client.api;
 
 import org.openapitools.client.ApiException;
-import org.openapitools.client.model.OutboundIpsResponse;
+import org.openapitools.client.model.OutboundIPsResponse;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +38,7 @@ public class OutboundIpsApiTest {
      */
     @Test
     public void outboundIpsGetTest() throws ApiException {
-        OutboundIpsResponse response = api.outboundIpsGet();
+        OutboundIPsResponse response = api.outboundIpsGet();
         // TODO: test validations
     }
 

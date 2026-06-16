@@ -26,17 +26,17 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * Model tests for OutboundIpsResponse
+ * Model tests for OutboundIPsResponse
  */
-public class OutboundIpsResponseTest {
-    private final OutboundIpsResponse model = new OutboundIpsResponse();
+public class OutboundIPsResponseTest {
+    private final OutboundIPsResponse model = new OutboundIPsResponse();
 
     /**
-     * Model tests for OutboundIpsResponse
+     * Model tests for OutboundIPsResponse
      */
     @Test
-    public void testOutboundIpsResponse() {
-        // TODO: test OutboundIpsResponse
+    public void testOutboundIPsResponse() {
+        // TODO: test OutboundIPsResponse
     }
 
     /**
