@@ -2053,7 +2053,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OutboundIpsResponse"
+                $ref: "#/components/schemas/OutboundIPsResponse"
           description: IP list
       security: []
       summary: Get outbound IP addresses for firewall whitelisting
@@ -5511,7 +5511,7 @@ components:
       - message
       - success
       type: object
-    OutboundIpsResponse:
+    OutboundIPsResponse:
       example:
         updated_at: updated_at
         ips:
